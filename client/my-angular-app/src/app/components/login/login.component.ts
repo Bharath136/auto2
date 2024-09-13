@@ -20,21 +20,23 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.email]],  // Adjust this if username is not email
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+      const { username, password } = this.loginForm.value;
 
-      this.http.post('http://localhost:3000/user/login', { email, password })
+      this.http.post('https://dev-cc.automateazy.com/api/v1/users/auth', { username, password })
         .subscribe(
           (response: any) => {
-            // Handle successful response, e.g., store token and navigate
-            console.log(response)
-            localStorage.setItem('token', response.user);
+            // Handle successful login
+            console.log(response);
+
+            // Assuming response contains a token
+            localStorage.setItem('token', response.token);  // Adjust this based on actual response field
 
             this.router.navigate(['/']);
           },

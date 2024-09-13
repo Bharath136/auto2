@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 // Product interface to define the structure of each product item
 interface Product {
@@ -15,41 +16,32 @@ interface Product {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  // Dummy data for products
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Product 1',
-      description: 'This is a brief description of Product 1.',
-      price: 29.99,
-      imageUrl: 'https://via.placeholder.com/300'
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      description: 'This is a brief description of Product 2.',
-      price: 39.99,
-      imageUrl: 'https://via.placeholder.com/300'
-    },
-    {
-      id: 3,
-      name: 'Product 3',
-      description: 'This is a brief description of Product 3.',
-      price: 49.99,
-      imageUrl: 'https://via.placeholder.com/300'
-    },
-    {
-      id: 4,
-      name: 'Product 4',
-      description: 'This is a brief description of Product 4.',
-      price: 59.99,
-      imageUrl: 'https://via.placeholder.com/300'
-    }
-  ];
+  products: Product[] = []; // Empty array to hold products fetched from API
+  token: string = 'your_token_here'; // Replace with your actual token
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    // Initialization logic if needed
+    this.fetchProducts();
+  }
+
+  fetchProducts(): void {
+    // Define the headers with the token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}` // Use Bearer token for authentication
+    });
+
+    // Call the API to get the product data
+    this.http.get<Product[]>('https://your-api-url.com/products', { headers })
+      .subscribe(
+        (response: Product[]) => {
+          // Assign the response to the products array
+          this.products = response;
+        },
+        (error) => {
+          // Handle the error if the API call fails
+          console.error('Error fetching products:', error);
+        }
+      );
   }
 }
